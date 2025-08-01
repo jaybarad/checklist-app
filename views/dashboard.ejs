@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Overline style for checked items */
+        .checked-item {
+            text-decoration: line-through;
+            color: grey;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Categories</h1>
+
+    <!-- Form to add a new category -->
+    <form action="/<%= userId %>/categories" method="POST" class="mb-4">
+        <div class="form-group">
+            <input type="text" name="name" class="form-control" placeholder="Category Name" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Category</button>
+    </form>
+    <form action="/logout" method="POST">
+        <button type="submit">Logout</button>
+    </form>
+    <!-- List of categories -->
+    <ul class="list-group">
+        <% categories.forEach(function(category) { %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span><%= category.name %></span>
+
+                <!-- Update Category -->
+                <form action="/<%= userId %>/categories/<%= category._id %>" method="POST" class="form-inline">
+                    <input type="text" name="name" class="form-control mr-2" value="<%= category.name %>" required>
+                    <button type="submit" class="btn btn-info">Update</button>
+                </form>
+
+                <!-- Delete Category -->
+                <a href="/<%= userId %>/categories/delete/<%= category._id %>" class="btn btn-danger ml-2">Delete</a>
+            </li>
+        <% }); %>
+    </ul>
+
+
+</div>
+
+<div class="container mt-5">
+    <h2>Create Checklist</h2>
+    <form action="/checklists" method="POST" id="checklistForm">
+        <!-- Checklist Title -->
+        <div class="form-group">
+            <label for="title">Checklist Title</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+
+        <!-- Dynamic Items Section -->
+        <div id="itemsContainer">
+            <div class="item-group border p-3 mb-3">
+                <h5>Item 1</h5>
+                <div class="form-group">
+                    <label for="itemName1">Item Name</label>
+                    <input type="text" id="itemName1" name="items[0][name]" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="itemPrice1">Item Price</label>
+                    <input type="number" id="itemPrice1" name="items[0][price]" class="form-control" required>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm remove-item" style="display: none;">Remove Item</button>
+            </div>
+        </div>
+
+        <!-- Add Item Button -->
+        <button type="button" id="addItemButton" class="btn btn-secondary btn-sm mb-3">Add Another Item</button>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Save Checklist</button>
+    </form>
+</div>
+<div class="container mt-5">
+    <h2>Dashboard - Your Checklists</h2>
+
+    <!-- Display each checklist -->
+    <% if (checklists.length > 0) { %>
+        <div class="accordion" id="checklistAccordion">
+            <% checklists.forEach((checklist, index) => { %>
+                <div class="card">
+                    <div class="card-header" id="heading<%= index %>">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse<%= index %>" aria-expanded="true" aria-controls="collapse<%= index %>">
+                                <%= checklist.title %>
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapse<%= index %>" class="collapse" aria-labelledby="heading<%= index %>" data-parent="#checklistAccordion">
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <% checklist.items.forEach(item => { %>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span><strong>Item:</strong> <%= item.name %></span>
+                                        <span><strong>Price:</strong> $<%= item.price %></span>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <p>No checklists available. <a href="/add-checklist">Create a new checklist</a></p>
+    <% } %>
+</div>
+<% if (checklists.length > 0) { %>
+<section class="vh-100" style="background-color: #3da2c3;">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <% checklists.forEach((checklist, index) => { %>
+            <div class="col col-lg-8 col-xl-6">
+                <div class="card rounded-3">
+                    <div class="card-body p-4">
+
+                        <p class="mb-2"><span class="h2 me-2"><%= checklist.title %></span> <span
+                                    class="badge bg-danger">checklist</span></p>
+                        <p class="text-muted pb-2">
+                            <%= checklist.createdAt %></p>
+                        <% let totalPrice = 0; %>
+                        <ul class="list-group rounded-0">
+                            <% checklist.items.forEach((item, itemIndex) => { %>
+                                <% totalPrice += item.price; %>
+                            <li class="list-group-item border-0 d-flex align-items-center ps-0">
+                                <input type="checkbox" class="item-checkbox form-check-input me-3" id="itemCheckbox<%= index %><%= itemIndex %>" onclick="toggleItem(this)">
+                                <label for="itemCheckbox<%= index %><%= itemIndex %>" class="ml-2 item-label">
+                                     <div class="item-name">
+                                         <span ><%= item.name %></span>
+                                         <span class="ml-3"> $<%= item.price %></span>
+                                     </div>
+
+                                </label>
+                            </li>
+                            <% }) %>
+                        </ul>
+                        <div class="mt-3">
+                            <strong>Total Price: </strong> $<%= totalPrice.toFixed(2) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <% }) %>
+        </div>
+    </div>
+</section>
+<% } else { %>
+    <p>No checklists available. <a href="/add-checklist">Create a new checklist</a></p>
+<% } %>
+<!-- JavaScript for Dynamic Items -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleItem(checkbox) {
+
+        const itemName = checkbox.closest('.list-group-item').querySelector('.item-name');
+        if (checkbox.checked) {
+            itemName.classList.add('checked-item');
+        } else {
+            itemName.classList.remove('checked-item');
+        }
+    }
+
+    let itemIndex = 1;
+
+    document.getElementById('addItemButton').addEventListener('click', () => {
+        const itemsContainer = document.getElementById('itemsContainer');
+
+        // Create a new item block
+        const itemGroup = document.createElement('div');
+        itemGroup.classList.add('item-group', 'border', 'p-3', 'mb-3');
+        itemGroup.innerHTML = `
+                <h5>Item ${itemIndex + 1}</h5>
+                <div class="form-group">
+                    <label for="itemName${itemIndex}">Item Name</label>
+                    <input type="text" id="itemName${itemIndex}" name="items[${itemIndex}][name]" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="itemPrice${itemIndex}">Item Price</label>
+                    <input type="number" id="itemPrice${itemIndex}" name="items[${itemIndex}][price]" class="form-control" required>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm remove-item">Remove Item</button>
+            `;
+
+        itemsContainer.appendChild(itemGroup);
+        itemIndex++;
+    });
+
+    // Event delegation for removing items
+    document.getElementById('itemsContainer').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-item')) {
+            e.target.closest('.item-group').remove();
+        }
+    });
+</script>
+
+
+</body>
+</html>
