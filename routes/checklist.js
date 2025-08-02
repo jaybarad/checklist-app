@@ -1,106 +1,142 @@
 const express = require('express');
 const router = express.Router();
 const Checklist = require('../models/Checklist');
-const Category = require('../models/Category');
-const User = require('../models/User');
+const { protect } = require('../middleware/auth');
 
-// Get all checklists for a user
-router.get('/checklists', async (req, res) => {
+// Input validation helper
+const validateChecklist = (req, res, next) => {
+    const { title, items } = req.body;
+    
+    // Title validation
+    if (!title || title.trim().length === 0) {
+        return res.status(400).json({ message: 'Checklist title is required' });
+    }
+    
+    if (title.length > 200) {
+        return res.status(400).json({ message: 'Title must be less than 200 characters' });
+    }
+    
+    // Items validation
+    if (!items || !Array.isArray(items)) {
+        return res.status(400).json({ message: 'Items must be an array' });
+    }
+    
+    if (items.length === 0) {
+        return res.status(400).json({ message: 'At least one item is required' });
+    }
+    
+    if (items.length > 100) {
+        return res.status(400).json({ message: 'Maximum 100 items allowed' });
+    }
+    
+    // Validate each item
+    for (const item of items) {
+        if (!item.name || item.name.trim().length === 0) {
+            return res.status(400).json({ message: 'Item name is required' });
+        }
+        
+        if (item.name.length > 200) {
+            return res.status(400).json({ message: 'Item name must be less than 200 characters' });
+        }
+        
+        if (item.price !== undefined && item.price !== null) {
+            const price = parseFloat(item.price);
+            if (isNaN(price) || price < 0 || price > 9999999) {
+                return res.status(400).json({ message: 'Invalid price value' });
+            }
+        }
+    }
+    
+    next();
+};
+
+// Get all checklists for authenticated user
+router.get('/checklists', protect, async (req, res) => {
     try {
-        const user = await User.findById(req.params.userId).populate({
-            path: 'categories',
-            populate: { path: 'checklists' }
-        });
-
-        res.json(user.categories);
+        const checklists = await Checklist.find({ userId: req.user.userId }).lean();
+        res.json({ checklists });
     } catch (err) {
+        console.error('Error fetching checklists:', err);
         res.status(500).json({ message: 'Server error' });
     }
 });
-//
-// // Create a new checklist
-// router.post('/:userId/:categoryId/checklists', async (req, res) => {
-//     const { name, price } = req.body;
-//     console.log(req.body);
-//     try {
-//         const category = await Category.findById(req.params.categoryId);
-//
-//         if (!category) {
-//             return res.status(404).json({ message: 'Category not found' });
-//         }
-//
-//         const newChecklist = new Checklist({
-//             name,
-//             price,
-//             category: req.params.categoryId
-//         });
-//
-//         await newChecklist.save();
-//
-//         // Associate the checklist with the category
-//         category.checklists.push(newChecklist._id);
-//         await category.save();
-//
-//         res.status(201).json(newChecklist);
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).json({ message: 'Server error' });
-//     }
-// });
-//
-// // Update a checklist
-// router.put('/:checklistId', async (req, res) => {
-//     const { name, price } = req.body;
-//
-//     try {
-//         const checklist = await Checklist.findByIdAndUpdate(req.params.checklistId, {
-//             name,
-//             price
-//         }, { new: true });
-//
-//         if (!checklist) {
-//             return res.status(404).json({ message: 'Checklist not found' });
-//         }
-//
-//         res.json(checklist);
-//     } catch (err) {
-//         res.status(500).json({ message: 'Server error' });
-//     }
-// });
-//
-// // Delete a checklist
-// router.delete('/:checklistId', async (req, res) => {
-//     try {
-//         const checklist = await Checklist.findByIdAndDelete(req.params.checklistId);
-//
-//         if (!checklist) {
-//             return res.status(404).json({ message: 'Checklist not found' });
-//         }
-//
-//         res.json({ message: 'Checklist deleted successfully' });
-//     } catch (err) {
-//         res.status(500).json({ message: 'Server error' });
-//     }
-// });
 
-router.post('/checklists', async (req, res) => {
+// Create a new checklist
+router.post('/checklists', protect, validateChecklist, async (req, res) => {
     const { title, items } = req.body;
-    const userId = req.session.userId;
-    console.log('Form data received:', req.body);
+    
     try {
+        // Sanitize items
+        const sanitizedItems = items.map(item => ({
+            name: item.name.trim(),
+            price: item.price ? parseFloat(item.price) : 0
+        }));
+        
         const checklist = new Checklist({
-            title,
-            userId,
-            items
+            title: title.trim(),
+            userId: req.user.userId,
+            items: sanitizedItems
         });
 
         await checklist.save();
-        res.redirect('/dashboard'); // Redirect to the dashboard or checklist list page
+        res.redirect('/dashboard');
     } catch (error) {
-        console.error('Error saving checklist:', error.message);
+        console.error('Error saving checklist:', error);
         res.status(500).json({ message: 'Server error: Could not save checklist' });
     }
 });
 
-module.exports = router;
+// Update a checklist
+router.put('/checklists/:id', protect, validateChecklist, async (req, res) => {
+    const { title, items } = req.body;
+    
+    try {
+        // Find checklist and verify ownership
+        const checklist = await Checklist.findById(req.params.id);
+        if (!checklist) {
+            return res.status(404).json({ message: 'Checklist not found' });
+        }
+        
+        if (checklist.userId !== req.user.userId) {
+            return res.status(403).json({ message: 'Forbidden: You do not own this checklist' });
+        }
+        
+        // Sanitize items
+        const sanitizedItems = items.map(item => ({
+            name: item.name.trim(),
+            price: item.price ? parseFloat(item.price) : 0
+        }));
+        
+        checklist.title = title.trim();
+        checklist.items = sanitizedItems;
+        await checklist.save();
+        
+        res.json({ message: 'Checklist updated successfully', checklist });
+    } catch (err) {
+        console.error('Error updating checklist:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
+// Delete a checklist
+router.delete('/checklists/:id', protect, async (req, res) => {
+    try {
+        // Find checklist and verify ownership
+        const checklist = await Checklist.findById(req.params.id);
+        if (!checklist) {
+            return res.status(404).json({ message: 'Checklist not found' });
+        }
+        
+        if (checklist.userId !== req.user.userId) {
+            return res.status(403).json({ message: 'Forbidden: You do not own this checklist' });
+        }
+        
+        await Checklist.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Checklist deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting checklist:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+module.exports = router;
