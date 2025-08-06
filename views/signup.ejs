@@ -3,80 +3,725 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <!-- Bootstrap CSS -->
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
+    <title>Sign Up - ChecklistPro</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-color: #f093fb;
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-color: #4ecdc4;
+            --success-color: #00b894;
+            --warning-color: #fdcb6e;
+            --danger-color: #e17055;
+            --light-bg: #f8f9fc;
+            --card-shadow: 0 0 35px 0 rgba(154, 161, 171, 0.15);
+            --card-shadow-hover: 0 5px 25px 0 rgba(154, 161, 171, 0.25);
+            --border-radius: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--secondary-gradient);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.5;
+            color: #2d3748;
+            position: relative;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: backgroundFloat 15s ease-in-out infinite;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 50%);
+            animation: backgroundFloat 20s ease-in-out infinite reverse;
+        }
+        
+        @keyframes backgroundFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-20px, -20px) rotate(120deg); }
+            66% { transform: translate(20px, -10px) rotate(240deg); }
+        }
+        
+        .auth-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+            padding: 0.5rem;
+            animation: slideInUp 0.8s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-card:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-2px);
+        }
+        
+        .auth-header {
+            background: var(--secondary-gradient);
+            color: white;
+            padding: 1.5rem 2rem 1rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .auth-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+        }
+        
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .auth-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        .auth-body {
+            padding: 1rem 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-label i {
+            color: var(--secondary-color);
+            width: 16px;
+            text-align: center;
+        }
+        
+        .form-control-modern {
+            padding: 0.625rem 0.875rem;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            width: 100%;
+        }
+        
+        .form-control-modern:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.1);
+            background: white;
+            outline: none;
+        }
+        
+        .form-control-modern:hover {
+            border-color: #cbd5e1;
+        }
+        
+        .form-control-modern.is-invalid {
+            border-color: var(--danger-color);
+            background: #fef2f2;
+        }
+        
+        .form-control-modern.is-valid {
+            border-color: var(--success-color);
+            background: #f0fdf4;
+        }
+        
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--danger-color);
+            padding-left: 0.5rem;
+        }
+        
+        .was-validated .form-control-modern:invalid ~ .invalid-feedback,
+        .form-control-modern.is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .valid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--success-color);
+            padding-left: 0.5rem;
+        }
+        
+        .was-validated .form-control-modern:valid ~ .valid-feedback,
+        .form-control-modern.is-valid ~ .valid-feedback {
+            display: block;
+        }
+        
+        .btn-auth {
+            width: 100%;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--secondary-gradient);
+            color: white;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-auth::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+        }
+        
+        .btn-auth:hover::before {
+            left: 100%;
+        }
+        
+        .btn-auth:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-auth:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            padding: 1rem 2rem 1.5rem;
+            background: #f8fafc;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .auth-footer p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+        
+        .auth-footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .auth-footer a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-gradient);
+            transition: width 0.3s ease;
+        }
+        
+        .auth-footer a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .auth-footer a:hover::after {
+            width: 100%;
+        }
+        
+        .input-group-modern {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 10;
+        }
+        
+        .input-icon:hover {
+            color: var(--secondary-color);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        
+        .password-strength.weak .password-strength-bar {
+            width: 25%;
+            background: var(--danger-color);
+        }
+        
+        .password-strength.fair .password-strength-bar {
+            width: 50%;
+            background: var(--warning-color);
+        }
+        
+        .password-strength.good .password-strength-bar {
+            width: 75%;
+            background: var(--accent-color);
+        }
+        
+        .password-strength.strong .password-strength-bar {
+            width: 100%;
+            background: var(--success-color);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 0.25rem;
+                max-width: 95%;
+            }
+            
+            .auth-header {
+                padding: 1rem 1.5rem 0.75rem;
+            }
+            
+            .auth-body {
+                padding: 0.75rem 1rem;
+            }
+            
+            .auth-footer {
+                padding: 0.75rem 1rem;
+            }
+            
+            .logo {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .auth-title {
+                font-size: 1.25rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .form-group {
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
 </head>
-<body class="bg-light">
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card mt-5">
-                <div class="card-body">
-                    <h3 class="card-title text-center">Sign Up</h3>
-                    <form class="needs-validation" action="/api/auth/signup" method="POST" novalidate>
-                        <div class="form-group mb-3">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                            <div class="invalid-feedback">Please enter your name.</div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                            <div class="invalid-feedback">Please enter a valid email address.</div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{10}" required>
-                            <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                            <div class="invalid-feedback">Please enter a username.</div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                            <div class="invalid-feedback">Please enter a password.</div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block w-100">Sign Up</button>
-                    </form>
-                    <div class="text-center mt-3">
-                        <p>Already have an account? <a href="/login">Login here</a></p>
-                    </div>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <div class="logo">
+                    <i class="fas fa-user-plus"></i>
                 </div>
+                <h1 class="auth-title">Join ChecklistPro</h1>
+                <p class="auth-subtitle">Create your account to start organizing</p>
+            </div>
+            
+            <!-- Body -->
+            <div class="auth-body">
+                <form class="needs-validation" action="/api/auth/signup" method="POST" novalidate id="signupForm">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Full Name
+                                </label>
+                                <input type="text" 
+                                       class="form-control form-control-modern" 
+                                       id="name" 
+                                       name="name" 
+                                       placeholder="Enter your full name" 
+                                       required
+                                       autocomplete="name">
+                                <div class="invalid-feedback">Please enter your full name.</div>
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-at"></i>
+                                    Username
+                                </label>
+                                <input type="text" 
+                                       class="form-control form-control-modern" 
+                                       id="username" 
+                                       name="username" 
+                                       placeholder="Choose a username" 
+                                       required
+                                       autocomplete="username"
+                                       pattern="[a-zA-Z0-9_]{3,20}"
+                                       title="Username must be 3-20 characters, letters, numbers and underscore only">
+                                <div class="invalid-feedback">Username must be 3-20 characters (letters, numbers, underscore only).</div>
+                                <div class="valid-feedback">Username is available!</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" 
+                                       class="form-control form-control-modern" 
+                                       id="email" 
+                                       name="email" 
+                                       placeholder="Enter your email" 
+                                       required
+                                       autocomplete="email">
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
+                                <div class="valid-feedback">Email format is correct!</div>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="phone" class="form-label">
+                                    <i class="fas fa-phone"></i>
+                                    Phone Number
+                                </label>
+                                <input type="tel" 
+                                       class="form-control form-control-modern" 
+                                       id="phone" 
+                                       name="phone" 
+                                       placeholder="10-digit phone number" 
+                                       pattern="[0-9]{10}" 
+                                       required
+                                       autocomplete="tel">
+                                <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
+                                <div class="valid-feedback">Phone number format is correct!</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <div class="input-group-modern">
+                            <input type="password" 
+                                   class="form-control form-control-modern" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Create a strong password" 
+                                   required
+                                   autocomplete="new-password"
+                                   minlength="6">
+                            <i class="fas fa-eye input-icon" id="togglePassword" title="Show password"></i>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="password-strength-bar"></div>
+                        </div>
+                        <div class="invalid-feedback">Password must be at least 6 characters long.</div>
+                        <div class="valid-feedback">Strong password!</div>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth" id="signupButton">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Create Account</span>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p>Already have an account? <a href="/login">Sign in here</a></p>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Optional Bootstrap JS for client-side validation -->
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-></script>
-<script>
-    // Bootstrap validation for client-side feedback
-    (function() {
-        'use strict';
-        // Fetch all forms we want to apply custom Bootstrap validation styles to
-        const forms = document.querySelectorAll('.needs-validation');
-
-        // Loop over the forms and prevent submission if the form is invalid
-        Array.prototype.slice.call(forms).forEach(function(form) {
-            form.addEventListener('submit', function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
+    
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password visibility toggle
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+                this.title = type === 'password' ? 'Show password' : 'Hide password';
+            });
+            
+            // Password strength indicator
+            const passwordStrength = document.getElementById('passwordStrength');
+            
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 'weak';
+                
+                if (password.length >= 8) {
+                    if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(password)) {
+                        strength = 'strong';
+                    } else if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password) || 
+                             /^(?=.*[a-z])(?=.*[@$!%*?&])/.test(password)) {
+                        strength = 'good';
+                    } else if (password.length >= 6) {
+                        strength = 'fair';
+                    }
+                } else if (password.length >= 6) {
+                    strength = 'fair';
                 }
-
-                form.classList.add('was-validated');
-            }, false);
+                
+                passwordStrength.className = `password-strength ${strength}`;
+            });
+            
+            // Form validation enhancement
+            const forms = document.querySelectorAll('.needs-validation');
+            const signupForm = document.getElementById('signupForm');
+            const signupButton = document.getElementById('signupButton');
+            
+            // Real-time validation
+            const inputs = signupForm.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    // Only validate if the form has been submitted or the field has been touched
+                    if (signupForm.classList.contains('was-validated') || this.value.length > 0) {
+                        validateInput(this);
+                    }
+                });
+                
+                input.addEventListener('input', function() {
+                    // Only validate if already showing validation
+                    if (this.classList.contains('is-invalid') || this.classList.contains('is-valid')) {
+                        validateInput(this);
+                    }
+                });
+            });
+            
+            function validateInput(input) {
+                if (input.checkValidity()) {
+                    input.classList.remove('is-invalid');
+                    input.classList.add('is-valid');
+                } else {
+                    input.classList.remove('is-valid');
+                    input.classList.add('is-invalid');
+                }
+            }
+            
+            // Form submission
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        
+                        // Focus on first invalid field
+                        const firstInvalid = form.querySelector(':invalid');
+                        if (firstInvalid) {
+                            firstInvalid.focus();
+                        }
+                    } else {
+                        // Show loading state
+                        const buttonSpan = signupButton.querySelector('span');
+                        const buttonIcon = signupButton.querySelector('i');
+                        
+                        buttonIcon.className = 'loading';
+                        buttonSpan.textContent = 'Creating Account...';
+                        signupButton.disabled = true;
+                        
+                        // Re-enable after 10 seconds as fallback
+                        setTimeout(() => {
+                            buttonIcon.className = 'fas fa-user-plus';
+                            buttonSpan.textContent = 'Create Account';
+                            signupButton.disabled = false;
+                        }, 10000);
+                    }
+                    
+                    form.classList.add('was-validated');
+                }, false);
+            });
+            
+            // Phone number formatting
+            const phoneInput = document.getElementById('phone');
+            phoneInput.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length > 10) {
+                    value = value.slice(0, 10);
+                }
+                this.value = value;
+            });
+            
+            // Username validation
+            const usernameInput = document.getElementById('username');
+            usernameInput.addEventListener('input', function() {
+                this.value = this.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+            });
+            
+            // Add focus animations
+            const formControls = document.querySelectorAll('.form-control-modern');
+            formControls.forEach(control => {
+                control.addEventListener('focus', function() {
+                    this.closest('.form-group').style.transform = 'translateY(-1px)';
+                    this.closest('.form-group').style.transition = 'transform 0.3s ease';
+                });
+                
+                control.addEventListener('blur', function() {
+                    this.closest('.form-group').style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Auto-focus first field
+            document.getElementById('name').focus();
         });
-    })();
-</script>
+    </script>
 </body>
 </html>
