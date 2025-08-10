@@ -46,6 +46,7 @@ const Checklist = require('./models/Checklist');
 const categoryRoutes = require('./routes/category');
 const dashboardRoutes = require('./routes/dashboard');
 const checklistRoutes = require('./routes/checklist');
+const templateRoutes = require('./routes/template');
 // Middleware to protect the dashboard route
 const protect = async (req, res, next) => {
     const token = req.session.token;
@@ -73,6 +74,7 @@ const protect = async (req, res, next) => {
 app.use('/', dashboardRoutes);
 app.use('/', categoryRoutes);
 app.use('/', checklistRoutes);
+app.use('/', templateRoutes);
 // Protected Dashboard Route
 app.get('/dashboard', protect, async (req, res) => {
     try {

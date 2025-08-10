@@ -567,6 +567,205 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* Template Styles */
+        .template-filters .template-filter {
+            transition: all 0.3s ease;
+        }
+        
+        .template-filters .template-filter.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .template-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+            border: 2px solid transparent;
+        }
+        
+        .template-card:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+        }
+        
+        .template-card.system-template {
+            border-left: 5px solid var(--accent-color);
+        }
+        
+        .template-card.custom-template {
+            border-left: 5px solid var(--warning-color);
+        }
+        
+        .template-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .template-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .template-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .template-category {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .template-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .template-description {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .template-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+        }
+        
+        .template-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
+        .template-price {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+        
+        .template-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .template-items-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            background: #fafafa;
+        }
+        
+        .template-item-row {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .template-item-row:hover {
+            background: #f1f5f9;
+            border-color: var(--primary-color);
+        }
+        
+        .template-item-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-color);
+            margin-right: 0.75rem;
+        }
+        
+        .template-item-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .template-item-name {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .template-item-price {
+            font-weight: 600;
+            color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .template-item-price-input {
+            width: 80px;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .template-total-container {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .checklist-actions .btn-modern {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        /* Template Filter Animation */
+        @keyframes templateShow {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .template-card.show {
+            animation: templateShow 0.4s ease-out;
+        }
     </style>
 </head>
 <body>
@@ -609,6 +808,13 @@
                             type="button" role="tab" aria-controls="create" aria-selected="false">
                         <i class="fas fa-plus-circle"></i>
                         <span>Create Checklist</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates" 
+                            type="button" role="tab" aria-controls="templates" aria-selected="false">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Templates</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -677,6 +883,19 @@
                                     <div class="total-price">
                                         <i class="fas fa-calculator"></i>
                                         Total Price: $<%= totalPrice.toFixed(2) %>
+                                    </div>
+                                    
+                                    <div class="checklist-actions mt-3 d-flex gap-2">
+                                        <button class="btn-warning-modern btn-modern" 
+                                                onclick="saveAsTemplate('<%= checklist._id %>', '<%= checklist.title %>', <%= JSON.stringify(checklist.items) %>, '<%= checklist.category ? checklist.category._id : '' %>')">
+                                            <i class="fas fa-bookmark"></i>
+                                            Save as Template
+                                        </button>
+                                        <button class="btn-danger-modern btn-modern" 
+                                                onclick="deleteChecklist('<%= checklist._id %>')">
+                                            <i class="fas fa-trash"></i>
+                                            Delete Checklist
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -798,6 +1017,60 @@
                 </div>
             </div>
 
+            <!-- Templates Tab -->
+            <div class="tab-pane fade" id="templates" role="tabpanel" aria-labelledby="templates-tab">
+                <!-- Template Gallery Header -->
+                <div class="modern-card mb-4">
+                    <div class="card-header-modern">
+                        <h3>
+                            <i class="fas fa-clipboard-check"></i>
+                            Template Gallery
+                        </h3>
+                    </div>
+                    <div class="card-body-modern">
+                        <p class="mb-3">Choose from system templates or create custom templates from your existing checklists.</p>
+                        
+                        <!-- Template Filters -->
+                        <div class="template-filters d-flex gap-2 mb-3">
+                            <button class="btn-primary-modern btn-modern template-filter active" data-filter="all">
+                                <i class="fas fa-th-large"></i>
+                                All Templates
+                            </button>
+                            <button class="btn-secondary-modern btn-modern template-filter" data-filter="system">
+                                <i class="fas fa-cogs"></i>
+                                System Templates
+                            </button>
+                            <button class="btn-secondary-modern btn-modern template-filter" data-filter="custom">
+                                <i class="fas fa-user"></i>
+                                My Templates
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Templates Loading State -->
+                <div id="templatesLoading" class="modern-card" style="display: none;">
+                    <div class="card-body-modern text-center">
+                        <div class="loading" style="width: 40px; height: 40px; margin: 2rem auto;"></div>
+                        <p>Loading templates...</p>
+                    </div>
+                </div>
+
+                <!-- Template Cards Container -->
+                <div id="templatesContainer" class="row">
+                    <!-- Templates will be loaded here via JavaScript -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="templatesEmpty" class="modern-card" style="display: none;">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h3>No templates found</h3>
+                        <p>Start by saving one of your checklists as a template, or browse system templates.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Categories Tab -->
             <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="categories-tab">
                 <div class="modern-card">
@@ -865,6 +1138,168 @@
                             </div>
                         <% } %>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Customization Modal -->
+    <div class="modal fade" id="templateModal" tabindex="-1" aria-labelledby="templateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="border: none; border-radius: var(--border-radius); box-shadow: var(--card-shadow-hover);">
+                <div class="modal-header" style="background: var(--primary-gradient); color: white; border: none;">
+                    <h5 class="modal-title" id="templateModalLabel">
+                        <i class="fas fa-magic"></i>
+                        Customize Template
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 2rem;">
+                    <form id="templateCustomizationForm">
+                        <!-- Template Info -->
+                        <div class="form-group-modern">
+                            <label for="templateChecklistTitle" class="form-label-modern">
+                                <i class="fas fa-heading"></i>
+                                Checklist Title
+                            </label>
+                            <input type="text" id="templateChecklistTitle" class="form-control form-control-modern" 
+                                   placeholder="Enter checklist title..." required>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label for="templateCategory" class="form-label-modern">
+                                <i class="fas fa-folder"></i>
+                                Category
+                            </label>
+                            <select id="templateCategory" class="form-control form-control-modern">
+                                <option value="">No Category</option>
+                                <% if (categories && categories.length > 0) { %>
+                                    <% categories.forEach(function(category) { %>
+                                        <option value="<%= category._id %>"><%= category.name %></option>
+                                    <% }); %>
+                                <% } %>
+                            </select>
+                        </div>
+
+                        <!-- Template Items -->
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="fas fa-list-check"></i>
+                                Template Items
+                                <small class="text-muted ms-2">(Check items to include in your checklist)</small>
+                            </label>
+                            <div id="templateItems" class="template-items-container">
+                                <!-- Template items will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- Add Custom Item -->
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">
+                                <i class="fas fa-plus"></i>
+                                Add Custom Item
+                            </label>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <input type="text" id="customItemName" class="form-control form-control-modern" 
+                                           placeholder="Custom item name...">
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background: var(--light-bg); border: 2px solid #e5e7eb;">$</span>
+                                        <input type="number" id="customItemPrice" class="form-control form-control-modern" 
+                                               placeholder="0.00" step="0.01" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" id="addCustomItemBtn" class="btn-secondary-modern btn-modern mt-2">
+                                <i class="fas fa-plus"></i>
+                                Add Custom Item
+                            </button>
+                        </div>
+
+                        <!-- Total Price Display -->
+                        <div class="template-total-container">
+                            <div class="total-price" id="templateTotalPrice">
+                                <i class="fas fa-calculator"></i>
+                                Total Price: $0.00
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 1rem 2rem 2rem;">
+                    <button type="button" class="btn-secondary-modern btn-modern" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="button" id="createFromTemplateBtn" class="btn-primary-modern btn-modern">
+                        <i class="fas fa-magic"></i>
+                        Create Checklist
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save as Template Modal -->
+    <div class="modal fade" id="saveTemplateModal" tabindex="-1" aria-labelledby="saveTemplateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border: none; border-radius: var(--border-radius); box-shadow: var(--card-shadow-hover);">
+                <div class="modal-header" style="background: var(--warning-color); color: #2d3748; border: none;">
+                    <h5 class="modal-title" id="saveTemplateModalLabel">
+                        <i class="fas fa-bookmark"></i>
+                        Save as Template
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 2rem;">
+                    <form id="saveTemplateForm">
+                        <input type="hidden" id="saveTemplateChecklistId">
+                        
+                        <div class="form-group-modern">
+                            <label for="templateName" class="form-label-modern">
+                                <i class="fas fa-tag"></i>
+                                Template Name
+                            </label>
+                            <input type="text" id="templateName" class="form-control form-control-modern" 
+                                   placeholder="Enter template name..." required>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label for="templateDescription" class="form-label-modern">
+                                <i class="fas fa-align-left"></i>
+                                Description (Optional)
+                            </label>
+                            <textarea id="templateDescription" class="form-control form-control-modern" 
+                                      rows="3" placeholder="Describe this template..."></textarea>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label for="templateCategorySelect" class="form-label-modern">
+                                <i class="fas fa-folder"></i>
+                                Template Category
+                            </label>
+                            <select id="templateCategorySelect" class="form-control form-control-modern">
+                                <option value="Shopping">Shopping</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Work">Work</option>
+                                <option value="Home">Home</option>
+                                <option value="Health">Health</option>
+                                <option value="Events">Events</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 1rem 2rem 2rem;">
+                    <button type="button" class="btn-secondary-modern btn-modern" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="button" id="saveTemplateBtn" class="btn-warning-modern btn-modern">
+                        <i class="fas fa-bookmark"></i>
+                        Save Template
+                    </button>
                 </div>
             </div>
         </div>
@@ -1023,6 +1458,527 @@
                 }
             });
         });
+
+        // ====== TEMPLATE FUNCTIONALITY ======
+
+        // Template data storage
+        let templates = [];
+        let currentTemplate = null;
+        let customItemCounter = 0;
+
+        // System templates data (would normally come from API)
+        const systemTemplates = [
+            {
+                id: 'grocery-basic',
+                name: 'Grocery Shopping',
+                description: 'Essential grocery items for weekly shopping',
+                category: 'Shopping',
+                type: 'system',
+                icon: 'fas fa-shopping-cart',
+                items: [
+                    { name: 'Milk', price: 3.50 },
+                    { name: 'Bread', price: 2.25 },
+                    { name: 'Eggs (dozen)', price: 4.00 },
+                    { name: 'Chicken Breast', price: 8.99 },
+                    { name: 'Rice', price: 3.75 },
+                    { name: 'Bananas', price: 2.50 },
+                    { name: 'Apples', price: 4.25 },
+                    { name: 'Tomatoes', price: 3.00 }
+                ]
+            },
+            {
+                id: 'travel-weekend',
+                name: 'Weekend Trip',
+                description: 'Essential items for a short weekend getaway',
+                category: 'Travel',
+                type: 'system',
+                icon: 'fas fa-suitcase',
+                items: [
+                    { name: 'Toothbrush & Toothpaste', price: 8.00 },
+                    { name: 'Change of Clothes', price: 0.00 },
+                    { name: 'Phone Charger', price: 15.00 },
+                    { name: 'Sunscreen', price: 12.50 },
+                    { name: 'Camera', price: 0.00 },
+                    { name: 'Snacks', price: 10.00 },
+                    { name: 'Water Bottle', price: 8.99 }
+                ]
+            },
+            {
+                id: 'home-cleaning',
+                name: 'House Cleaning',
+                description: 'Complete house cleaning checklist',
+                category: 'Home',
+                type: 'system',
+                icon: 'fas fa-home',
+                items: [
+                    { name: 'All-Purpose Cleaner', price: 4.99 },
+                    { name: 'Paper Towels', price: 8.50 },
+                    { name: 'Vacuum Cleaner Bags', price: 12.00 },
+                    { name: 'Rubber Gloves', price: 3.99 },
+                    { name: 'Sponges', price: 5.50 },
+                    { name: 'Glass Cleaner', price: 3.75 },
+                    { name: 'Toilet Paper', price: 15.99 }
+                ]
+            },
+            {
+                id: 'work-meeting',
+                name: 'Work Meeting Prep',
+                description: 'Preparation checklist for important work meetings',
+                category: 'Work',
+                type: 'system',
+                icon: 'fas fa-briefcase',
+                items: [
+                    { name: 'Laptop', price: 0.00 },
+                    { name: 'Notebook & Pen', price: 5.00 },
+                    { name: 'Meeting Agenda', price: 0.00 },
+                    { name: 'Business Cards', price: 25.00 },
+                    { name: 'Presentation Materials', price: 10.00 },
+                    { name: 'Water Bottle', price: 0.00 }
+                ]
+            },
+            {
+                id: 'party-planning',
+                name: 'Birthday Party',
+                description: 'Everything needed for a memorable birthday party',
+                category: 'Events',
+                type: 'system',
+                icon: 'fas fa-birthday-cake',
+                items: [
+                    { name: 'Birthday Cake', price: 35.00 },
+                    { name: 'Decorations', price: 25.00 },
+                    { name: 'Party Hats', price: 8.99 },
+                    { name: 'Balloons', price: 15.50 },
+                    { name: 'Paper Plates & Cups', price: 12.00 },
+                    { name: 'Snacks & Drinks', price: 40.00 },
+                    { name: 'Gift Wrapping', price: 10.00 },
+                    { name: 'Camera Film', price: 8.50 }
+                ]
+            },
+            {
+                id: 'health-checkup',
+                name: 'Health Check-up',
+                description: 'Preparation for annual health examination',
+                category: 'Health',
+                type: 'system',
+                icon: 'fas fa-heartbeat',
+                items: [
+                    { name: 'Insurance Card', price: 0.00 },
+                    { name: 'Medical History List', price: 0.00 },
+                    { name: 'Current Medications', price: 0.00 },
+                    { name: 'Questions for Doctor', price: 0.00 },
+                    { name: 'Co-pay Payment', price: 25.00 }
+                ]
+            }
+        ];
+
+        // Initialize templates when Templates tab is shown
+        document.getElementById('templates-tab').addEventListener('shown.bs.tab', function() {
+            if (templates.length === 0) {
+                loadTemplates();
+            }
+        });
+
+        // Template filter functionality
+        document.querySelectorAll('.template-filter').forEach(filter => {
+            filter.addEventListener('click', function() {
+                // Update active filter
+                document.querySelectorAll('.template-filter').forEach(f => f.classList.remove('active'));
+                this.classList.add('active');
+
+                // Filter templates
+                const filterType = this.dataset.filter;
+                filterTemplates(filterType);
+            });
+        });
+
+        function loadTemplates() {
+            showTemplatesLoading();
+            
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // Combine system templates with any custom templates (from localStorage for demo)
+                const customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '[]');
+                templates = [...systemTemplates, ...customTemplates];
+                
+                displayTemplates(templates);
+                hideTemplatesLoading();
+            }, 1000);
+        }
+
+        function showTemplatesLoading() {
+            document.getElementById('templatesLoading').style.display = 'block';
+            document.getElementById('templatesContainer').style.display = 'none';
+            document.getElementById('templatesEmpty').style.display = 'none';
+        }
+
+        function hideTemplatesLoading() {
+            document.getElementById('templatesLoading').style.display = 'none';
+            document.getElementById('templatesContainer').style.display = 'block';
+        }
+
+        function displayTemplates(templatesToShow) {
+            const container = document.getElementById('templatesContainer');
+            
+            if (templatesToShow.length === 0) {
+                container.style.display = 'none';
+                document.getElementById('templatesEmpty').style.display = 'block';
+                return;
+            }
+
+            container.innerHTML = '';
+            document.getElementById('templatesEmpty').style.display = 'none';
+
+            templatesToShow.forEach((template, index) => {
+                const templateCard = createTemplateCard(template);
+                container.appendChild(templateCard);
+                
+                // Add show animation with delay
+                setTimeout(() => {
+                    templateCard.classList.add('show');
+                }, index * 100);
+            });
+        }
+
+        function createTemplateCard(template) {
+            const col = document.createElement('div');
+            col.className = 'col-md-6 col-lg-4 mb-4';
+
+            const totalPrice = template.items.reduce((sum, item) => sum + item.price, 0);
+            const templateTypeClass = template.type === 'system' ? 'system-template' : 'custom-template';
+
+            col.innerHTML = `
+                <div class="template-card ${templateTypeClass}">
+                    <div class="template-header">
+                        <div class="template-icon">
+                            <i class="${template.icon}"></i>
+                        </div>
+                        <h4 class="template-title">${template.name}</h4>
+                        <span class="template-category">${template.category}</span>
+                    </div>
+                    <div class="template-body">
+                        <p class="template-description">${template.description}</p>
+                        <div class="template-meta">
+                            <div class="template-meta-item">
+                                <i class="fas fa-list"></i>
+                                <span>${template.items.length} items</span>
+                            </div>
+                            <div class="template-meta-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span class="template-price">$${totalPrice.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="btn-primary-modern btn-modern flex-fill" onclick="useTemplate('${template.id}')">
+                                <i class="fas fa-magic"></i>
+                                Use Template
+                            </button>
+                            ${template.type === 'custom' ? `
+                                <button class="btn-danger-modern btn-modern" onclick="deleteTemplate('${template.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return col;
+        }
+
+        function filterTemplates(filterType) {
+            let filteredTemplates;
+            
+            switch(filterType) {
+                case 'system':
+                    filteredTemplates = templates.filter(t => t.type === 'system');
+                    break;
+                case 'custom':
+                    filteredTemplates = templates.filter(t => t.type === 'custom');
+                    break;
+                default:
+                    filteredTemplates = templates;
+            }
+
+            displayTemplates(filteredTemplates);
+        }
+
+        function useTemplate(templateId) {
+            const template = templates.find(t => t.id === templateId);
+            if (!template) return;
+
+            currentTemplate = template;
+            
+            // Populate modal with template data
+            document.getElementById('templateChecklistTitle').value = template.name;
+            document.getElementById('templateModalLabel').innerHTML = `
+                <i class="fas fa-magic"></i>
+                Customize "${template.name}" Template
+            `;
+
+            // Clear and populate template items
+            populateTemplateItems(template.items);
+            
+            // Calculate initial total
+            calculateTemplateTotal();
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('templateModal'));
+            modal.show();
+        }
+
+        function populateTemplateItems(items) {
+            const container = document.getElementById('templateItems');
+            container.innerHTML = '';
+            customItemCounter = 0;
+
+            items.forEach((item, index) => {
+                const itemRow = document.createElement('div');
+                itemRow.className = 'template-item-row';
+                itemRow.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <input type="checkbox" class="template-item-checkbox" 
+                               id="templateItem${index}" checked 
+                               onchange="calculateTemplateTotal()">
+                        <div class="template-item-content">
+                            <label for="templateItem${index}" class="template-item-name">
+                                ${item.name}
+                            </label>
+                            <input type="number" class="template-item-price-input" 
+                                   value="${item.price.toFixed(2)}" step="0.01" min="0"
+                                   onchange="calculateTemplateTotal()">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(itemRow);
+            });
+        }
+
+        function calculateTemplateTotal() {
+            const checkboxes = document.querySelectorAll('.template-item-checkbox:checked');
+            let total = 0;
+
+            checkboxes.forEach(checkbox => {
+                const priceInput = checkbox.closest('.template-item-row').querySelector('.template-item-price-input');
+                total += parseFloat(priceInput.value) || 0;
+            });
+
+            document.getElementById('templateTotalPrice').innerHTML = `
+                <i class="fas fa-calculator"></i>
+                Total Price: $${total.toFixed(2)}
+            `;
+        }
+
+        // Add custom item functionality
+        document.getElementById('addCustomItemBtn').addEventListener('click', function() {
+            const name = document.getElementById('customItemName').value.trim();
+            const price = parseFloat(document.getElementById('customItemPrice').value) || 0;
+
+            if (!name) {
+                alert('Please enter an item name');
+                return;
+            }
+
+            addCustomItemToTemplate(name, price);
+            
+            // Clear inputs
+            document.getElementById('customItemName').value = '';
+            document.getElementById('customItemPrice').value = '';
+        });
+
+        function addCustomItemToTemplate(name, price) {
+            const container = document.getElementById('templateItems');
+            customItemCounter++;
+            
+            const itemRow = document.createElement('div');
+            itemRow.className = 'template-item-row';
+            itemRow.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" class="template-item-checkbox" 
+                           id="customItem${customItemCounter}" checked 
+                           onchange="calculateTemplateTotal()">
+                    <div class="template-item-content">
+                        <label for="customItem${customItemCounter}" class="template-item-name">
+                            ${name} <small class="text-muted">(Custom)</small>
+                        </label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="number" class="template-item-price-input" 
+                                   value="${price.toFixed(2)}" step="0.01" min="0"
+                                   onchange="calculateTemplateTotal()">
+                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                    onclick="removeCustomItem(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(itemRow);
+            calculateTemplateTotal();
+        }
+
+        function removeCustomItem(button) {
+            button.closest('.template-item-row').remove();
+            calculateTemplateTotal();
+        }
+
+        // Create checklist from template
+        document.getElementById('createFromTemplateBtn').addEventListener('click', function() {
+            const title = document.getElementById('templateChecklistTitle').value.trim();
+            const categoryId = document.getElementById('templateCategory').value;
+            
+            if (!title) {
+                alert('Please enter a checklist title');
+                return;
+            }
+
+            // Collect selected items
+            const selectedItems = [];
+            const checkedBoxes = document.querySelectorAll('.template-item-checkbox:checked');
+            
+            checkedBoxes.forEach(checkbox => {
+                const row = checkbox.closest('.template-item-row');
+                const name = row.querySelector('.template-item-name').textContent.replace(' (Custom)', '').trim();
+                const price = parseFloat(row.querySelector('.template-item-price-input').value) || 0;
+                
+                selectedItems.push({ name, price });
+            });
+
+            if (selectedItems.length === 0) {
+                alert('Please select at least one item');
+                return;
+            }
+
+            // Create checklist data
+            const checklistData = {
+                title: title,
+                categoryId: categoryId || null,
+                items: selectedItems
+            };
+
+            // Submit to backend
+            createChecklistFromTemplate(checklistData);
+        });
+
+        async function createChecklistFromTemplate(checklistData) {
+            const button = document.getElementById('createFromTemplateBtn');
+            const originalHTML = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = '<span class="loading"></span> Creating...';
+            button.disabled = true;
+
+            try {
+                const response = await fetch('/checklists', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(checklistData)
+                });
+
+                if (response.ok) {
+                    // Close modal and refresh page
+                    bootstrap.Modal.getInstance(document.getElementById('templateModal')).hide();
+                    
+                    // Show success message and refresh
+                    setTimeout(() => {
+                        alert('Checklist created successfully from template!');
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    throw new Error('Failed to create checklist');
+                }
+            } catch (error) {
+                console.error('Error creating checklist:', error);
+                alert('Error creating checklist. Please try again.');
+            } finally {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            }
+        }
+
+        // Save as template functionality
+        function saveAsTemplate(checklistId, title, items, categoryId) {
+            document.getElementById('saveTemplateChecklistId').value = checklistId;
+            document.getElementById('templateName').value = title + ' Template';
+            
+            const modal = new bootstrap.Modal(document.getElementById('saveTemplateModal'));
+            modal.show();
+        }
+
+        document.getElementById('saveTemplateBtn').addEventListener('click', function() {
+            const checklistId = document.getElementById('saveTemplateChecklistId').value;
+            const templateName = document.getElementById('templateName').value.trim();
+            const templateDescription = document.getElementById('templateDescription').value.trim();
+            const templateCategory = document.getElementById('templateCategorySelect').value;
+
+            if (!templateName) {
+                alert('Please enter a template name');
+                return;
+            }
+
+            // For demo purposes, save to localStorage (would normally save to backend)
+            saveTemplateToStorage(checklistId, templateName, templateDescription, templateCategory);
+        });
+
+        function saveTemplateToStorage(checklistId, name, description, category) {
+            // Get checklist data (this would normally come from an API call)
+            // For demo, we'll create a mock template
+            const customTemplate = {
+                id: 'custom-' + Date.now(),
+                name: name,
+                description: description || 'Custom template created from checklist',
+                category: category,
+                type: 'custom',
+                icon: 'fas fa-user-check',
+                items: [
+                    { name: 'Sample Item 1', price: 10.00 },
+                    { name: 'Sample Item 2', price: 15.50 }
+                ]
+            };
+
+            // Save to localStorage
+            const customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '[]');
+            customTemplates.push(customTemplate);
+            localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
+
+            // Update templates array and refresh display
+            templates.push(customTemplate);
+            
+            // Close modal and show success
+            bootstrap.Modal.getInstance(document.getElementById('saveTemplateModal')).hide();
+            
+            setTimeout(() => {
+                alert('Template saved successfully!');
+                // Refresh templates display
+                displayTemplates(templates);
+            }, 500);
+        }
+
+        function deleteTemplate(templateId) {
+            if (!confirm('Are you sure you want to delete this template?')) {
+                return;
+            }
+
+            // Remove from localStorage
+            const customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '[]');
+            const updatedTemplates = customTemplates.filter(t => t.id !== templateId);
+            localStorage.setItem('customTemplates', JSON.stringify(updatedTemplates));
+
+            // Remove from templates array and refresh display
+            templates = templates.filter(t => t.id !== templateId);
+            displayTemplates(templates);
+        }
+
+        function deleteChecklist(checklistId) {
+            if (!confirm('Are you sure you want to delete this checklist?')) {
+                return;
+            }
+
+            // Make delete request to backend
+            window.location.href = `/checklists/delete/${checklistId}`;
+        }
     </script>
 </body>
 </html>
