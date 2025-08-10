@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node test/runner.js",
+    "test:model": "node test/templateModel.test.js",
+    "test:controller": "node test/templateController.test.js", 
+    "test:integration": "node test/templateIntegration.test.js",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },

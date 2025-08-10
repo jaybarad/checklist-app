@@ -396,6 +396,390 @@ Signup form page.
 
 **Note:** Redirects to `/dashboard` if already authenticated
 
+### Template Endpoints
+
+#### 1. Get All Templates
+Retrieves all available templates (system templates and user's own templates).
+
+**Endpoint:** `GET /api/templates`
+
+**Headers Required:** Valid session cookie
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 20, max: 100)
+- `category` (optional): Filter by category (shopping, travel, moving, event, routine, custom)
+- `type` (optional): Filter by type (system, user)
+- `search` (optional): Search in name, description, tags
+- `sort` (optional): Sort order (popular, newest, oldest, rating, name)
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "name": "Grocery Shopping",
+      "description": "Essential grocery items checklist",
+      "type": "system",
+      "category": "shopping",
+      "icon": "fas fa-shopping-cart",
+      "usageCount": 245,
+      "rating": 4,
+      "items": [
+        {
+          "name": "Bread",
+          "defaultPrice": 2.99,
+          "category": "bakery",
+          "isOptional": false,
+          "alternatives": []
+        }
+      ],
+      "metadata": {
+        "season": ["all"],
+        "duration": "short",
+        "difficulty": "beginner",
+        "estimatedTotal": 45.99,
+        "tags": ["grocery", "essentials"]
+      },
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2024-01-20T14:20:00.000Z"
+    }
+  ],
+  "pagination": {
+    "currentPage": 1,
+    "totalPages": 3,
+    "totalItems": 52,
+    "itemsPerPage": 20,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+**Example cURL:**
+```bash
+curl -X GET "http://localhost:5000/api/templates?category=shopping&sort=popular" \
+  -b cookies.txt
+```
+
+#### 2. Get Template Categories
+Retrieves template categories with usage statistics.
+
+**Endpoint:** `GET /api/templates/categories`
+
+**Headers Required:** Valid session cookie
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "name": "shopping",
+      "count": 12,
+      "avgRating": 4.2,
+      "totalUsage": 1245
+    },
+    {
+      "name": "travel",
+      "count": 8,
+      "avgRating": 4.5,
+      "totalUsage": 890
+    }
+  ]
+}
+```
+
+#### 3. Get Template by ID
+Retrieves specific template details.
+
+**Endpoint:** `GET /api/templates/:id`
+
+**Headers Required:** Valid session cookie
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "507f1f77bcf86cd799439011",
+    "name": "Weekend Trip Packing",
+    "description": "Complete packing list for short trips",
+    "type": "system",
+    "category": "travel",
+    "items": [
+      {
+        "name": "Toiletries",
+        "defaultPrice": 0,
+        "isOptional": false,
+        "alternatives": [
+          {
+            "name": "Travel-sized toiletries",
+            "price": 15.99
+          }
+        ]
+      }
+    ],
+    "calculatedEstimatedTotal": 125.50,
+    "requiredItems": [...],
+    "optionalItems": [...]
+  }
+}
+```
+
+**Error Responses:**
+- `404 Not Found`: Template not found
+- `403 Forbidden`: Access denied to private template
+
+#### 4. Create Template
+Creates a new user template.
+
+**Endpoint:** `POST /api/templates`
+
+**Headers Required:** Valid session cookie
+
+**Request Body:**
+```json
+{
+  "name": "My Custom Template",
+  "description": "Description of my template",
+  "category": "custom",
+  "icon": "fas fa-list-check",
+  "isPublic": false,
+  "items": [
+    {
+      "name": "Item 1",
+      "defaultPrice": 19.99,
+      "category": "electronics",
+      "isOptional": false,
+      "alternatives": [
+        {
+          "name": "Budget Alternative",
+          "price": 9.99
+        }
+      ]
+    },
+    {
+      "name": "Optional Item",
+      "defaultPrice": 5.00,
+      "isOptional": true,
+      "alternatives": []
+    }
+  ],
+  "metadata": {
+    "season": ["summer", "spring"],
+    "duration": "medium",
+    "difficulty": "intermediate",
+    "tags": ["outdoor", "sports"]
+  }
+}
+```
+
+**Validation Rules:**
+- `name`: Required, 3-100 characters
+- `category`: Required, must be valid category
+- `description`: Optional, max 500 characters
+- `items`: Required array, 1-100 items
+- `items[].name`: Required, max 100 characters
+- `items[].defaultPrice`: Optional, >= 0
+- `metadata.tags[]`: Max 30 characters each
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "507f1f77bcf86cd799439015",
+    "name": "My Custom Template",
+    // ... full template object
+  },
+  "message": "Template created successfully"
+}
+```
+
+#### 5. Update Template
+Updates an existing user template.
+
+**Endpoint:** `PUT /api/templates/:id`
+
+**Headers Required:** Valid session cookie
+
+**Request Body:** Same as create template
+
+**Authorization:** Only template owner can update
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": {
+    // ... updated template object
+  },
+  "message": "Template updated successfully"
+}
+```
+
+**Error Responses:**
+- `404 Not Found`: Template not found
+- `403 Forbidden`: Not template owner or system template
+
+#### 6. Delete Template
+Deletes a user template.
+
+**Endpoint:** `DELETE /api/templates/:id`
+
+**Headers Required:** Valid session cookie
+
+**Authorization:** Only template owner can delete
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Template deleted successfully"
+}
+```
+
+#### 7. Use Template
+Creates a checklist from a template with customizations.
+
+**Endpoint:** `POST /api/templates/:id/use`
+
+**Headers Required:** Valid session cookie
+
+**Request Body:**
+```json
+{
+  "title": "My Shopping List",
+  "selectedItems": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"],
+  "customizations": {
+    "507f1f77bcf86cd799439011": {
+      "name": "Custom Item Name",
+      "price": 25.99
+    }
+  },
+  "categoryId": "507f1f77bcf86cd799439020"
+}
+```
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "507f1f77bcf86cd799439025",
+    "title": "My Shopping List",
+    "userId": "507f1f77bcf86cd799439012",
+    "items": [
+      {
+        "name": "Custom Item Name",
+        "price": 25.99
+      }
+    ],
+    "templateId": "507f1f77bcf86cd799439011",
+    "createdAt": "2024-01-20T15:30:00.000Z"
+  },
+  "message": "Checklist created from template successfully"
+}
+```
+
+#### 8. Rate Template
+Rates a template (1-5 stars).
+
+**Endpoint:** `POST /api/templates/:id/rate`
+
+**Headers Required:** Valid session cookie
+
+**Request Body:**
+```json
+{
+  "rating": 4
+}
+```
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "rating": 4
+  },
+  "message": "Template rated successfully"
+}
+```
+
+#### 9. Get Smart Suggestions
+Gets template suggestions based on context (season, usage patterns, etc.).
+
+**Endpoint:** `GET /api/templates/suggestions`
+
+**Headers Required:** Valid session cookie
+
+**Query Parameters:**
+- `context` (optional): Context for suggestions
+- `limit` (optional): Number of suggestions (default: 5, max: 10)
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "507f1f77bcf86cd799439030",
+      "name": "Winter Preparation",
+      "category": "routine",
+      "usageCount": 156,
+      "rating": 4.5,
+      "metadata": {
+        "season": ["winter"]
+      }
+    }
+  ],
+  "context": {
+    "season": "winter",
+    "suggestedBy": "general"
+  }
+}
+```
+
+#### 10. Save Checklist as Template
+Converts an existing checklist to a reusable template.
+
+**Endpoint:** `POST /api/checklists/:id/save-as-template`
+
+**Headers Required:** Valid session cookie
+
+**Request Body:**
+```json
+{
+  "templateName": "My Template from Checklist",
+  "templateDescription": "Created from my successful checklist",
+  "templateCategory": "custom",
+  "isPublic": false,
+  "metadata": {
+    "season": ["all"],
+    "duration": "medium",
+    "difficulty": "beginner",
+    "tags": ["personal", "tested"]
+  }
+}
+```
+
+**Authorization:** Only checklist owner can convert
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": {
+    // ... created template object
+  },
+  "message": "Checklist converted to template successfully"
+}
+```
+
 ## Error Response Format
 
 All error responses follow this format:
