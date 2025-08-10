@@ -87,5 +87,10 @@ This is a Node.js/Express web application for checklist management with user aut
 - Added responsive tab navigation in dashboard
 - Implemented real-time form validation
 - Added password strength indicator
-- Created comprehensive documentation (README.md, API.md)
-- Documented security vulnerabilities and improvements in summary.md
+- Fixed category management functionality (URL routing and ObjectId comparison)
+- Added category-checklist integration with inline category creation
+- Fixed authentication API endpoints to handle both JSON and form submissions
+- Removed MongoDB deprecation warnings (useNewUrlParser, useUnifiedTopology)
+- Fixed userId generation in signup controller
+- Created comprehensive documentation (README.md, API.md, FEATURE_SUGGESTIONS.md)
+- Documented security vulnerabilities and improvements
