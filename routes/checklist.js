@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Checklist = require('../models/Checklist');
+const Category = require('../models/Category');
 const { protect } = require('../middleware/auth');
 
 // Input validation helper
@@ -53,7 +54,9 @@ const validateChecklist = (req, res, next) => {
 // Get all checklists for authenticated user
 router.get('/checklists', protect, async (req, res) => {
     try {
-        const checklists = await Checklist.find({ userId: req.user.userId }).lean();
+        const checklists = await Checklist.find({ userId: req.user.userId })
+            .populate('category', 'name')
+            .lean();
         res.json({ checklists });
     } catch (err) {
         console.error('Error fetching checklists:', err);
@@ -63,9 +66,31 @@ router.get('/checklists', protect, async (req, res) => {
 
 // Create a new checklist
 router.post('/checklists', protect, validateChecklist, async (req, res) => {
-    const { title, items } = req.body;
+    const { title, items, categoryId, newCategoryName } = req.body;
     
     try {
+        let finalCategoryId = null;
+        
+        // Handle category creation or selection
+        if (categoryId === 'new' && newCategoryName && newCategoryName.trim()) {
+            // Create new category
+            const newCategory = new Category({
+                name: newCategoryName.trim(),
+                user: req.user.userId
+            });
+            await newCategory.save();
+            finalCategoryId = newCategory._id;
+        } else if (categoryId && categoryId !== '' && categoryId !== 'new') {
+            // Verify category exists and belongs to user
+            const category = await Category.findOne({ 
+                _id: categoryId, 
+                user: req.user.userId 
+            });
+            if (category) {
+                finalCategoryId = category._id;
+            }
+        }
+        
         // Sanitize items
         const sanitizedItems = items.map(item => ({
             name: item.name.trim(),
@@ -75,7 +100,8 @@ router.post('/checklists', protect, validateChecklist, async (req, res) => {
         const checklist = new Checklist({
             title: title.trim(),
             userId: req.user.userId,
-            items: sanitizedItems
+            items: sanitizedItems,
+            category: finalCategoryId
         });
 
         await checklist.save();

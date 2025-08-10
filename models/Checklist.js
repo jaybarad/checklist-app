@@ -23,6 +23,11 @@ const checklistSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
+    },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: false // Optional, user can create checklist without category
     }
 }, {
     timestamps: true // Adds createdAt and updatedAt fields

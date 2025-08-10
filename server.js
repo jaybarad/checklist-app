@@ -79,7 +79,9 @@ app.get('/dashboard', protect, async (req, res) => {
         const user = await User.findById(req.user._id);
         const userId = user.userId;
         const categories = await Category.find({ user: userId });
-        const checklists = await Checklist.find({ userId }).lean();
+        const checklists = await Checklist.find({ userId })
+            .populate('category', 'name')
+            .lean();
         res.render('dashboard', { user: req.user, userId, categories, checklists });
     } catch (err) {
         console.error('Dashboard error:', err);

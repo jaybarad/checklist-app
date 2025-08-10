@@ -61,7 +61,7 @@ router.post('/categories/:id', protect, async (req, res) => {
             return res.status(404).json({ message: 'Category not found' });
         }
         
-        if (category.user !== req.user.userId) {
+        if (category.user.toString() !== req.user.userId.toString()) {
             return res.status(403).json({ message: 'Forbidden: You do not own this category' });
         }
         
@@ -84,7 +84,7 @@ router.get('/categories/delete/:id', protect, async (req, res) => {
             return res.status(404).json({ message: 'Category not found' });
         }
         
-        if (category.user !== req.user.userId) {
+        if (category.user.toString() !== req.user.userId.toString()) {
             return res.status(403).json({ message: 'Forbidden: You do not own this category' });
         }
         

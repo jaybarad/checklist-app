@@ -637,6 +637,12 @@
                                         <%= checklist.title %>
                                     </h3>
                                     <div class="checklist-meta">
+                                        <% if (checklist.category) { %>
+                                            <span class="badge bg-primary me-2">
+                                                <i class="fas fa-folder"></i>
+                                                <%= checklist.category.name %>
+                                            </span>
+                                        <% } %>
                                         <i class="fas fa-calendar-alt"></i>
                                         Created: <%= new Date(checklist.createdAt).toLocaleDateString() %>
                                         <span class="ms-3">
@@ -712,6 +718,29 @@
                             </div>
 
                             <div class="form-group-modern">
+                                <label for="category" class="form-label-modern">
+                                    <i class="fas fa-folder"></i>
+                                    Category
+                                </label>
+                                <div class="d-flex gap-2">
+                                    <select id="category" name="categoryId" class="form-control form-control-modern">
+                                        <option value="">No Category</option>
+                                        <option value="new">+ Create New Category</option>
+                                        <% if (categories && categories.length > 0) { %>
+                                            <% categories.forEach(function(category) { %>
+                                                <option value="<%= category._id %>"><%= category.name %></option>
+                                            <% }); %>
+                                        <% } %>
+                                    </select>
+                                    <div id="newCategoryDiv" style="display: none; flex: 1;">
+                                        <input type="text" id="newCategoryName" name="newCategoryName" 
+                                               class="form-control form-control-modern" 
+                                               placeholder="Enter new category name...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group-modern">
                                 <label class="form-label-modern">
                                     <i class="fas fa-list"></i>
                                     Checklist Items
@@ -781,7 +810,7 @@
                     <div class="card-body-modern">
                         <!-- Add Category Form -->
                         <div class="modern-form mb-4">
-                            <form action="/<%= userId %>/categories" method="POST">
+                            <form action="/categories" method="POST">
                                 <div class="form-group-modern">
                                     <label class="form-label-modern">
                                         <i class="fas fa-tag"></i>
@@ -809,7 +838,7 @@
                                             <%= category.name %>
                                         </div>
                                         <div class="category-actions">
-                                            <form action="/<%= userId %>/categories/<%= category._id %>" method="POST" 
+                                            <form action="/categories/<%= category._id %>" method="POST" 
                                                   class="category-update-form">
                                                 <input type="text" name="name" class="form-control form-control-modern" 
                                                        value="<%= category.name %>" required>
@@ -818,7 +847,7 @@
                                                     Update
                                                 </button>
                                             </form>
-                                            <a href="/<%= userId %>/categories/delete/<%= category._id %>" 
+                                            <a href="/categories/delete/<%= category._id %>" 
                                                class="btn-danger-modern btn-modern"
                                                onclick="return confirm('Are you sure you want to delete this category?')">
                                                 <i class="fas fa-trash"></i>
@@ -845,6 +874,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        // Handle category selection
+        document.getElementById('category').addEventListener('change', function() {
+            const newCategoryDiv = document.getElementById('newCategoryDiv');
+            const categorySelect = this;
+            
+            if (this.value === 'new') {
+                newCategoryDiv.style.display = 'block';
+                categorySelect.style.flex = '0 0 auto';
+                document.getElementById('newCategoryName').required = true;
+            } else {
+                newCategoryDiv.style.display = 'none';
+                categorySelect.style.flex = '1';
+                document.getElementById('newCategoryName').required = false;
+                document.getElementById('newCategoryName').value = '';
+            }
+        });
+
         // Toggle item completion
         function toggleItem(checkbox) {
             const itemContent = checkbox.closest('.checklist-item').querySelector('.item-content');

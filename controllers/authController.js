@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 // Generate JWT token
 const generateToken = (id) => {
@@ -64,20 +65,32 @@ exports.signup = async (req, res) => {
             }
         }
 
+        // Generate a unique userId
+        const userId = new mongoose.Types.ObjectId().toString();
+        
         // Create the new user in the database
         const user = new User({
+            userId: userId,
             name: sanitizedData.name,
             email: sanitizedData.email,
             phone: sanitizedData.phone,
             username: sanitizedData.username,
             password: sanitizedData.password
         });
-        user.userId = user._id.toString();
         await user.save();
 
         const token = generateToken(user._id);
-        // req.session.token = token; // Store token in session
-        res.redirect('/login'); // Redirect to dashboard
+        
+        // Check if it's an API call or form submission
+        if (req.headers['content-type'] === 'application/json' || req.xhr) {
+            res.status(201).json({ 
+                message: 'User created successfully',
+                token: token,
+                userId: userId
+            });
+        } else {
+            res.redirect('/login'); // Redirect to login for form submissions
+        }
     } catch (error) {
         console.error('Signup Error:', error);
         res.status(500).json({ message: 'Server error' });
@@ -109,8 +122,16 @@ exports.login = async (req, res) => {
         req.session.token = token;
         req.session.userId = user.userId;
 
-        res.redirect('/dashboard'); // Redirect to dashboard after login
-        // res.json({ token });
+        // Check if it's an API call or form submission
+        if (req.headers['content-type'] === 'application/json' || req.xhr) {
+            res.status(200).json({ 
+                message: 'Login successful',
+                token: token,
+                userId: user.userId
+            });
+        } else {
+            res.redirect('/dashboard'); // Redirect to dashboard for form submissions
+        }
     } catch (error) {
         console.error('Login Error:', error);
         res.status(500).json({ message: 'Server error' });
